@@ -21,7 +21,7 @@ export default function UserNameScreen({ navigation }: Props) {
     const handleSubmit = () => {
         dispatch(setUsername(user))
         setUser('')
-        navigation.navigate('Home')
+        navigation.navigate('Password')
     }
 
     return (
