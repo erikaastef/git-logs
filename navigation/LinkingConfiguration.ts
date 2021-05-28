@@ -18,7 +18,7 @@ export default {
       },
       Repository: 'repository',
       Home: 'home',
-      NotFound: '*',
+      Error: 'error',
     },
   },
 };

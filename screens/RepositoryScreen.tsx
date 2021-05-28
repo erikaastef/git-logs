@@ -1,41 +1,89 @@
 import * as React from 'react';
 import styled from 'styled-components/native'
-import { View } from "react-native";
+import { SafeAreaView, View } from "react-native";
+import { LinearProgress } from 'react-native-elements';
+
 import Input from '../components/Input'
 import Button from '../components/Button'
 import Header from '../components/Header'
+import { useAppSelector } from '../redux/hooks'
+
+import { useAppDispatch } from '../redux/hooks'
+import { setRepository } from '../redux/userSlice'
+
+import { Octokit } from '@octokit/core'
 
 type Props = {
     navigation: any
 }
 
 export default function RepositoryScreen({ navigation }: Props) {
-    const [repository, setRepository] = React.useState('')
+    const [repositoryValue, setRepositoryValue] = React.useState('')
+    const [loading, setLoading] = React.useState(false)
+
+    const user = useAppSelector((state) => state.user)
+    const dispatch = useAppDispatch()
+
+    const octokit = new Octokit();
+
+    const fetch = async () => {
+        try {
+
+            const userInfo = await octokit.request<any>("GET /users/{username}", {
+                username: user.username,
+            })
+            const commitsResponse = await octokit.request<any>("GET /repos/{owner}/{repo}/commits", {
+                owner: user.username,
+                repo: repositoryValue
+            });
+            const repositoryData = {
+                commits: commitsResponse.data.map((singleCommit: any) => (
+                    {
+                        avatar: userInfo.avatar_url || "https://avatars.githubusercontent.com/u/6363106?v=4",
+                        user_message: singleCommit.commit.message,
+                        username: singleCommit.commit.commiter.name || singleCommit.commit.author.name,
+                        date: new Date(singleCommit.commit.commiter.date || singleCommit.commit.author.date).toLocaleDateString()
+                    }
+                ))
+            }
+            dispatch(setRepository(repositoryData))
+            setRepositoryValue('')
+            navigation.navigate('Home')
+        } catch (err) {
+            navigation.navigate('Error')
+        }
+    }
+    React.useEffect(() => {
+        if (loading) fetch()
+    }, [loading])
+
     return (
-
-
         <Container>
             <Header
                 screen="Repository"
                 navigation={navigation} />
             <Repo>
-                <Input
-                    label="Repository"
-                    value={repository}
-                    onChangeText={(text) => setRepository(text)}
-                    placeholder="e.g. facebook/home"
-                />
-                <Button
-                    title="submit"
-                    onPress={() => navigation.navigate('Home')}
-                />
+                {loading ?
+                    <LinearProgress color="#431170" />
+                    :
+                    <>
+                        <Input
+                            label="Repository"
+                            value={repositoryValue}
+                            onChangeText={(text) => setRepositoryValue(text)}
+                            placeholder="e.g. facebook/home"
+                        />
+                        <Button
+                            title="submit"
+                            onPress={() => setLoading(true)}
+                        />
+                    </>}
             </Repo>
         </Container>
-
     );
 }
 
-const Container = styled(View)` 
+const Container = styled(SafeAreaView)` 
     height:100%;
     justify-content:space-between;
     background:${({ theme }) => theme.lightPink}

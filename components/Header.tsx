@@ -2,16 +2,29 @@ import * as React from 'react';
 import styled, { css } from 'styled-components/native'
 import { SafeAreaView, Image, TouchableOpacity, Text } from 'react-native';
 
+import { useAppDispatch } from '../redux/hooks'
+import { logOut, setRepository } from '../redux/userSlice'
+
 type Props = {
     navigation: any,
     screen: string
 }
 export default function Header({ screen, navigation }: Props) {
+    const dispatch = useAppDispatch()
+    
+    const handleLogOut = () => {
+        dispatch(logOut())
+        navigation.navigate('Username')
+    }
+    const searchNewRepo = () => {
+        dispatch(setRepository({}))
+        navigation.navigate('Repository')
+    }
     return (
         <>
             {screen === 'Repository' &&
                 <Wrapper justifyContent="flex-end">
-                    <StyledButton onPress={() => navigation.navigate('Username')}>
+                    <StyledButton onPress={handleLogOut}>
                         <Image source={require("../assets/images/logout.png")} />
                         <StyledText>LOG OUT</StyledText>
                     </StyledButton>
@@ -21,13 +34,13 @@ export default function Header({ screen, navigation }: Props) {
             {
                 screen === "Home" &&
                 <Wrapper>
-                    <StyledButton 
-                    alignItems="flex-start"
-                    onPress={() => navigation.navigate('Repository')}>
+                    <StyledButton
+                        alignItems="flex-start"
+                        onPress={searchNewRepo}>
                         <Image source={require("../assets/images/github-min.png")} />
                         <StyledText>SEARCH NEW REPO</StyledText>
                     </StyledButton>
-                    <StyledButton onPress={() => navigation.navigate('Username')}>
+                    <StyledButton onPress={handleLogOut}>
                         <Image source={require("../assets/images/logout.png")} />
                         <StyledText>LOG OUT</StyledText>
                     </StyledButton>

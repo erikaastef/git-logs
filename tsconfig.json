@@ -16,10 +16,10 @@
   "exclude": [
     "node_modules",
     "babel.config.js",
-    "jest.config.js"
   ],
   "types": [
-    "styled-components-react-native"
+    "styled-components-react-native",
+    "react-redux"
   ],
   "extends": "expo/tsconfig.base"
 }

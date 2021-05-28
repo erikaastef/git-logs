@@ -7,7 +7,7 @@ export type RootStackParamList = {
   LogIn: undefined;
   Repository: undefined;
   Home: undefined;
-  NotFound: undefined;
+  Error: undefined;
 };
 
 export type LogInParamList = {

@@ -18,9 +18,10 @@ const Container = styled(View)`
     width:100%;
     align-items:center;
     justify-content:center;
+    margin-top:20px;
 `
 const Icon = styled(Image)`
-    margin-bottom:10px;
+    margin-bottom:35px;
 `
 const StyledText = styled(Text)`
     color:${({ theme }) => theme.pink};

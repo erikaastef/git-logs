@@ -19,5 +19,5 @@ export default function BackgroundImg({ children }: Props) {
 const Background = styled.ImageBackground`
     flex: 1;
     resize-mode: cover;
-    padding: 33% 10% 10%;
+    padding: 33% 5% 10%;
 `
