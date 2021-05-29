@@ -41,13 +41,14 @@ export default function RepositoryScreen({ navigation }: Props) {
                     {
                         avatar: userInfo.data.avatar_url || "https://avatars.githubusercontent.com/u/6363106?v=4",
                         user_message: singleCommit.commit.message,
-                        username:  singleCommit.commit.author.name,
+                        username: singleCommit.commit.author.name,
                         date: new Date(singleCommit.commit.author.date).toLocaleDateString()
                     }
                 ))
             }
             dispatch(setRepository(repositoryData))
             setRepositoryValue('')
+            setLoading(false)
             navigation.navigate('Home')
         } catch (err) {
             console.log(err, "err")
