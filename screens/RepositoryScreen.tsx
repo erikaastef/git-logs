@@ -34,24 +34,39 @@ export default function RepositoryScreen({ navigation }: Props) {
             })
             const commitsResponse = await octokit.request<any>("GET /repos/{owner}/{repo}/commits", {
                 owner: user.username,
-                repo: repositoryValue
+                repo: repositoryValue,
             });
             const repositoryData = {
-                commits: commitsResponse.data.map((singleCommit: any) => (
-                    {
-                        avatar: userInfo.data.avatar_url || "https://avatars.githubusercontent.com/u/6363106?v=4",
-                        user_message: singleCommit.commit.message,
-                        username: singleCommit.commit.author.name,
-                        date: new Date(singleCommit.commit.author.date).toLocaleDateString()
+                commits: commitsResponse.data.map((singleCommit: any) => {
+                    //if the commit was not made by the same username
+                    if (singleCommit.commit.author.name !== user.username) {
+                        return (
+                            {   //the avatar is a generic github icon
+                                avatar: "http://avatars.githubusercontent.com/u/6363106?v=4",
+                                user_message: singleCommit.commit.message,
+                                username: singleCommit.commit.author.name,
+                                date: new Date(singleCommit.commit.author.date).toLocaleDateString()
+                            }
+                        )
+
+                    } else {
+                        return (
+                            {
+                                avatar: userInfo.data.avatar_url || "http://avatars.githubusercontent.com/u/6363106?v=4",
+                                user_message: singleCommit.commit.message,
+                                username: singleCommit.commit.author.name,
+                                date: new Date(singleCommit.commit.author.date).toLocaleDateString()
+                            }
+                        )
                     }
-                ))
+                }
+                )
             }
             dispatch(setRepository(repositoryData))
             setRepositoryValue('')
             setLoading(false)
             navigation.navigate('Home')
         } catch (err) {
-            console.log(err, "err")
             navigation.navigate('Error')
         }
     }
