@@ -39,10 +39,10 @@ export default function RepositoryScreen({ navigation }: Props) {
             const repositoryData = {
                 commits: commitsResponse.data.map((singleCommit: any) => (
                     {
-                        avatar: userInfo.avatar_url || "https://avatars.githubusercontent.com/u/6363106?v=4",
+                        avatar: userInfo.data.avatar_url || "https://avatars.githubusercontent.com/u/6363106?v=4",
                         user_message: singleCommit.commit.message,
-                        username: singleCommit.commit.commiter.name || singleCommit.commit.author.name,
-                        date: new Date(singleCommit.commit.commiter.date || singleCommit.commit.author.date).toLocaleDateString()
+                        username:  singleCommit.commit.author.name,
+                        date: new Date(singleCommit.commit.author.date).toLocaleDateString()
                     }
                 ))
             }
@@ -50,6 +50,7 @@ export default function RepositoryScreen({ navigation }: Props) {
             setRepositoryValue('')
             navigation.navigate('Home')
         } catch (err) {
+            console.log(err, "err")
             navigation.navigate('Error')
         }
     }
